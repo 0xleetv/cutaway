@@ -378,6 +378,14 @@ export function runPhoneGreen(TL = {}) {
           }
         }
 
+        // Portrait: float the whole stack above the floor while it is apart, so no
+        // part can ever dip below the studio floor and vanish into it
+        if (PORTRAIT && explode > 0.001) {
+          const liftY = 1.7 * explode;
+          phone.root.position.y = liftY;
+          camTarget.y += liftY;
+        }
+
         phone.pose({teardown, explode, open});
         phone.root.updateMatrixWorld(true);
         frameCam(camPos, camTarget, shiftX, shiftY, 2.15);
