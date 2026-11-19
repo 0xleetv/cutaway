@@ -17,6 +17,13 @@ THE LOOK
 - one main set of limbs per animal (legs, or wings, or tentacles)
 - near-white studio, soft floor shadow
 
+TEARDOWN & DEVICE LOOK
+1. Motherboard reads saturated industrial circuit green with visible bright gold traces and prominent stamped silver RF shield cans with micro-vent grids.
+2. Battery pouch carries crisp silver technical print, regulatory markings, certification badges (CE, recycling, WEEE), QR code, and barcode on matte black.
+3. Heat pipes read bright reflective metallic copper with rounded tubular profiles, never dull or brown.
+4. Connectors, contacts, and flex cable terminals read gleaming gold with rich amber Kapton polyimide ribbons.
+5. Small sub-assemblies (SIM tray, coin vibration motor with gold tabs, white barcode label, fingerprint sensor on Kapton ribbon) sit as distinct, individually readable pieces with clean contact shadows, never blended together.
+
 THE ORDER
 1. Measure the reference first: body height, head length, jaw or limb length, as shares of the body length. Write the numbers down.
 2. Build every part that will come apart as its own group, with a named anchor point, so the film can open it later.
@@ -51,4 +58,5 @@ THE SHORT VERSION
 - **"Grade against the picture"** keeps the self-check honest. Claude grades its own memory of the build as "yes" otherwise.
 - **"Nothing gets filmed until I say yes"** keeps tokens from burning on a film of a toy.
 - **"The correction goes into this file"** is how animal 5 stops repeating the mistakes of animal 1.
-- **The camera section** came from a film where every beat sat between 20° and 50° on one side, at one height and one distance. It looked parked.
+- **"The camera section** came from a film where every beat sat between 20° and 50° on one side, at one height and one distance. It looked parked.
+- **"Teardown & device look"** came from the smartphone teardown: the PCB needed saturated circuit green and silver RF shield cans, the battery needed razor-sharp silver regulatory markings, the heat pipes needed bright metallic copper, and small parts (SIM tray, coin motor, fingerprint ribbon) needed individual clarity rather than blending together.

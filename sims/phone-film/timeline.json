@@ -1,0 +1,16 @@
+{
+  "duration": 20.0,
+  "push": 0.72,
+  "opt": 0.88,
+  "pills": ["overview", "optics", "board", "shield", "battery", "exploded", "hero"],
+  "script": [
+    {"t": 0.0, "act": "overview"},
+    {"t": 2.8, "act": "optics"},
+    {"t": 6.2, "act": "board"},
+    {"t": 9.4, "act": "shield"},
+    {"t": 12.2, "act": "battery"},
+    {"t": 14.6, "act": "exploded"},
+    {"t": 17.2, "act": "assemble"},
+    {"t": 18.4, "act": "hero"}
+  ]
+}
