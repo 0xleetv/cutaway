@@ -37,13 +37,15 @@ Rules the build follows to stay smooth:
 
 Read SKILL.md and docs/JOB_DESCRIPTION.md in this repo. Then set up my environment: confirm node is version 20 or newer, run npm install, run npx playwright install chromium, then check for ffmpeg and python 3. If either is missing, tell me plainly and give me the exact install command for this machine, or install it yourself if you can. Do not build anything yet. When everything is ready, print a short checklist of what passed and what is missing.
 
-## Prompt 2: first fresh build (a phone, no reference picture needed)
+## Prompt 2: the build (paste this once setup passes)
 
-Reference object: a smartphone (a modern flagship-style phone). Find a high resolution reference picture yourself, or I will hand you one. Follow SKILL.md exactly. Rebuild it in three.js as a 3D object I can take apart: frame, screen, battery, board, cameras, everything a real phone carries. Write the checklist for it from the reference, build the still, then stop and show me the still. Do not film until I approve the still.
+Read SKILL.md and docs/JOB_DESCRIPTION.md in this repo. If SKILL.md is not in the current folder, first run git clone https://github.com/0xleetv/cutaway.git and cd into it.
+
+Build a smartphone teardown from this reference picture: download it from https://guide-images.cdn.ifixit.com/igi/uZnks2HEM3CAp1KO.full into the repo folder first (an iFixit parts-layout photo of a disassembled phone on a white background). Follow SKILL.md exactly. Rebuild it in three.js as a 3D object I can take apart: glass, frame, camera modules, board, battery, display, every part visible in the reference. Write the checklist from the reference, build the still, then stop and show me the still. Do not film until I approve the still.
 
 It must run smooth on a mid-range Android phone: low poly, no heavy post-processing, pixel ratio capped at 2, interaction at 60 fps. Test the final html on a phone and fix any lag before you call it done. Sound on: use the procedural sfx engine for the teardown.
 
-After my approval, film it the way the piranha example is filmed, about 20 seconds, every part on its own camera, and give me the html. I will decide about the mp4 after I see it.
+After my approval, film it the way the piranha example is filmed, about 20 seconds, every part on its own camera, and give me the html.
 
 ## How the loop works, so you know what to expect
 
