@@ -82,19 +82,112 @@ export function runPhoneGreen(TL = {}) {
     const cursorAt = makeCursor(ui, TL.script || [], (act) => (act === 'assemble' ? 'exploded' : act));
     const labels = makeLabels(stage, phone.anchors);
 
+    // Portrait phone mode: on a tall screen the studio fills the whole view and the
+    // HUD restacks (compact head, wrapped pills, no side rails); landscape keeps the
+    // exact 1600x900 film strip.
+    let PORTRAIT = false;
+    const injectPortraitStyle = () => {
+      if (app.querySelector('style[data-portrait]')) return;
+      const el = document.createElement('style');
+      el.setAttribute('data-portrait', '');
+      el.textContent = `
+.vp-portrait .nav,.vp-portrait .cards,.vp-portrait .cur,.vp-portrait .ring{display:none!important}
+.vp-portrait .logo{left:16px;top:16px;font-size:17px}
+.vp-portrait .logo i{width:24px;height:24px;border-radius:7px}
+.vp-portrait .lang{right:16px;top:16px;height:26px;padding:0 10px;font-size:11px}
+.vp-portrait .head{top:56px}
+.vp-portrait .head .ver{font-size:16px}
+.vp-portrait .head h1{font-size:24px;margin-top:8px}
+.vp-portrait .head .rule{width:64px;height:3px;margin-top:9px}
+.vp-portrait .head .date{margin-top:7px;font-size:11px}
+.vp-portrait .pills{top:152px;flex-wrap:wrap;gap:6px;padding:0 16px}
+.vp-portrait .pill{height:27px;padding:0 10px;font-size:11px;gap:6px}
+.vp-portrait .pill i{width:12px;height:12px}
+.vp-portrait .foot{left:14px;right:14px;top:auto;bottom:16px}
+.vp-portrait .foot .st{height:24px;font-size:11px;padding:0 10px}
+.vp-portrait .foot .tm{font-size:11px}
+.vp-portrait svg.lines{width:100%;height:100%}
+.vp-portrait .lab{padding:6px 9px;border-radius:8px}
+.vp-portrait .lab b{font-size:11px}
+.vp-portrait .lab span{font-size:9.5px;margin-top:2px}
+`;
+      app.appendChild(el);
+    };
+
     const fit = () => {
       if (app && app.style) {
-        const s = Math.min(innerWidth / 1600, innerHeight / 900);
-        const x = Math.max(0, (innerWidth - 1600 * s) / 2);
-        const y = Math.max(0, (innerHeight - 900 * s) / 2);
-        app.style.transform = `translate(${x}px, ${y}px) scale(${s})`;
+        PORTRAIT = innerHeight > innerWidth;
+        if (PORTRAIT) {
+          app.style.setProperty('width', `${innerWidth}px`, 'important');
+          app.style.setProperty('height', `${innerHeight}px`, 'important');
+          app.style.setProperty('transform', 'none', 'important');
+          app.classList.add('vp-portrait');
+        } else {
+          app.style.setProperty('width', '1600px', 'important');
+          app.style.setProperty('height', '900px', 'important');
+          const s = Math.min(innerWidth / 1600, innerHeight / 900);
+          const x = Math.max(0, (innerWidth - 1600 * s) / 2);
+          const y = Math.max(0, (innerHeight - 900 * s) / 2);
+          app.style.transform = `translate(${x}px, ${y}px) scale(${s})`;
+          app.classList.remove('vp-portrait');
+        }
       }
+    };
+
+    // Portrait camera: pull back so the horizontal extent matches the 16:9 framing,
+    // then a little margin. Keeps every act's composition readable on a tall screen.
+    const frameCam = (pos, target, sx, sy, pull = 1.0) => {
+      const st = stage.size;
+      if (st.h > st.w) {
+        const cpos = pos.clone().sub(target).multiplyScalar(pull).add(target);
+        stage.frame({cam: {pos: cpos, target, sx: 0, sy: Math.round(sy * (st.h / 900))}});
+      } else {
+        stage.frame({cam: {pos, target, sx, sy}});
+      }
+    };
+
+    // Portrait labels: same stacking idea as look.js, in real canvas pixels with the
+    // phone's own safe bands (below the pills, above the foot).
+    const portraitLabels = ({set, o}) => {
+      if (o < 0.02) return [];
+      const W = stage.size.w, H = stage.size.h;
+      const top = 248, bottom = H - 80;
+      const pts = [];
+      for (const [key, name, sub] of set) {
+        const A = phone.anchors[key];
+        if (!A) continue;
+        let w;
+        if (typeof A === 'function') w = A();
+        else {
+          A.obj.updateWorldMatrix(true, false);
+          w = A.obj.localToWorld(new THREE.Vector3().copy(A.at));
+        }
+        const at = stage.project(w);
+        if (at && at[0] > 60 && at[0] < W - 60 && at[1] > top && at[1] < bottom) {
+          pts.push({name: nice(name), sub, at});
+        }
+      }
+      const mid = W / 2;
+      const out = [];
+      const stack = (col, x, w) => {
+        let y = Math.max(top, Math.min(col.length ? col[0].at[1] - 10 : 0, bottom - 44 * col.length));
+        for (const c of col) {
+          y = Math.max(y, Math.min(bottom, c.at[1] - 10));
+          out.push({name: c.name, sub: c.sub, at: c.at, label: [x, y], w, o});
+          y += 44;
+        }
+      };
+      stack(pts.filter((x) => x.at[0] < mid).sort((a, b) => a.at[1] - b.at[1]), 14, 'l');
+      stack(pts.filter((x) => x.at[0] >= mid).sort((a, b) => a.at[1] - b.at[1]), W - 14, 'r');
+      return out;
     };
 
     const resize = () => {
       fit();
+      injectPortraitStyle();
       const dpr = capture ? 1.0 : Math.min(window.devicePixelRatio || 1, 2);
-      stage.resize(1600, 900, dpr);
+      if (PORTRAIT) stage.resize(innerWidth, innerHeight, dpr);
+      else stage.resize(1600, 900, dpr);
     };
     resize();
 
@@ -113,12 +206,7 @@ export function runPhoneGreen(TL = {}) {
           phone.root.rotation.set(0, 0, 0);
           phone.pose({teardown: 1.0, explode: 0.0});
           phone.root.updateMatrixWorld(true);
-          stage.frame({
-            cam: {
-              pos: new THREE.Vector3(0, 14.8, 11.8),
-              target: new THREE.Vector3(0, 0, 0.1),
-            },
-          });
+          frameCam(new THREE.Vector3(0, 14.8, 11.8), new THREE.Vector3(0, 0, 0.1), 0, 0, 2.15);
           return {};
         }
 
@@ -281,7 +369,7 @@ export function runPhoneGreen(TL = {}) {
 
         phone.pose({teardown, explode, open});
         phone.root.updateMatrixWorld(true);
-        stage.frame({cam: {pos: camPos, target: camTarget, sx: shiftX, sy: shiftY}});
+        frameCam(camPos, camTarget, shiftX, shiftY, 2.15);
 
         // Dynamic telemetry values
         const integrity = 1.0 - (teardown * 0.95 + explode * 0.9);
@@ -301,7 +389,7 @@ export function runPhoneGreen(TL = {}) {
           ],
           apart: apartPct,
           view: currentAct === 'assemble' ? 'exploded' : currentAct,
-          callouts: labels({set: labelSet, o: labelOpacity}),
+          callouts: PORTRAIT ? portraitLabels({set: labelSet, o: labelOpacity}) : labels({set: labelSet, o: labelOpacity}),
           cursor: cursorAt(t),
         });
 
