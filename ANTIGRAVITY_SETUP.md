@@ -4,11 +4,24 @@ Why this file: cutaway ships as a Claude Code skill, but nothing in it is Claude
 
 ## Phone or desktop
 
-Viewing a finished build runs anywhere: cutaway bundles everything into one self-contained HTML file that opens in any browser, phone included. Heavy films can lag on a phone, which the tarantula example already showed.
+Viewing a finished build runs anywhere: cutaway bundles everything into one self-contained HTML file that opens in any browser, phone included.
 
 Building needs a desktop. The build step itself is light, but the film render drives headless Chromium and ffmpeg, which a phone cannot run.
 
 Verdict: build on the laptop through Antigravity, view the output anywhere.
+
+## Performance bar: it must play smooth on a phone
+
+Every finished build gets tested on a mid-range Android phone before it is called done. If it lags, scrolls rough or drops frames, the build is not finished. The tarantula example lags on a phone; that is the floor to beat, not the standard.
+
+Rules the build follows to stay smooth:
+
+1. Low poly counts. Model parts from simple primitives, not imported meshes.
+2. No heavy post-processing. No full-screen bloom, blur or shader passes.
+3. Cap the pixel ratio at 2.
+4. Prefer baked or simple lighting; avoid realtime shadows on many lights.
+5. Interaction (orbit, drag, explode) must stay at 60 fps on the phone.
+6. Keep the html lean; the tarantula file is 885 KB and that is about the ceiling.
 
 ## One-time setup, about ten minutes
 
@@ -24,9 +37,13 @@ Verdict: build on the laptop through Antigravity, view the output anywhere.
 
 Read SKILL.md and docs/JOB_DESCRIPTION.md in this repo. Then set up my environment: confirm node is version 20 or newer, run npm install, run npx playwright install chromium, then check for ffmpeg and python 3. If either is missing, tell me plainly and give me the exact install command for this machine, or install it yourself if you can. Do not build anything yet. When everything is ready, print a short checklist of what passed and what is missing.
 
-## Prompt 2: first fresh build (from your own picture)
+## Prompt 2: first fresh build (a phone, no reference picture needed)
 
-Here is my reference picture: [drag the image into Antigravity, or give its file path]. Follow SKILL.md exactly. Rebuild it in three.js as a 3D object I can take apart. Write the checklist for it from the picture, build the still, then stop and show me the still. Do not film until I approve the still. After my approval, film it the way the piranha example is filmed, about 20 seconds, every part on its own camera, and give me the html. I will decide about the mp4 after I see it.
+Reference object: a smartphone (a modern flagship-style phone). Find a high resolution reference picture yourself, or I will hand you one. Follow SKILL.md exactly. Rebuild it in three.js as a 3D object I can take apart: frame, screen, battery, board, cameras, everything a real phone carries. Write the checklist for it from the reference, build the still, then stop and show me the still. Do not film until I approve the still.
+
+It must run smooth on a mid-range Android phone: low poly, no heavy post-processing, pixel ratio capped at 2, interaction at 60 fps. Test the final html on a phone and fix any lag before you call it done. Sound on: use the procedural sfx engine for the teardown.
+
+After my approval, film it the way the piranha example is filmed, about 20 seconds, every part on its own camera, and give me the html. I will decide about the mp4 after I see it.
 
 ## How the loop works, so you know what to expect
 
