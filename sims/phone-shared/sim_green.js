@@ -321,7 +321,14 @@ export function runPhoneGreen(TL = {}) {
           explode = lerp(0.0, 1.0, Math.min(1.0, u * 1.5));
           const angle = lerp(0.25 * Math.PI, 1.35 * Math.PI, u);
           const radius = lerp(12.8, 12.0, u);
-          camPos.set(Math.sin(angle) * radius, lerp(4.6, 3.8, u), Math.cos(angle) * radius);
+          let tRadius = radius;
+          let tHeight = lerp(4.6, 3.8, u);
+          if (PORTRAIT) {
+            const back = Math.min(1, u * 1.6);
+            tRadius = lerp(26, 12, back);
+            tHeight = lerp(10.5, 4.2, back);
+          }
+          camPos.set(Math.sin(angle) * tRadius, tHeight, Math.cos(angle) * tRadius);
           camTarget.set(0, 0.2, 0);
           shiftX = -15;
           shiftY = 95;
@@ -339,7 +346,11 @@ export function runPhoneGreen(TL = {}) {
           teardown = 0.0;
           explode = lerp(1.0, 0.0, u);
           apartPct = Math.round(explode * 100);
-          camPos.set(lerp(8.0, 4.2, u), lerp(4.2, 2.6, u), lerp(9.0, 10.8, u));
+          if (PORTRAIT) {
+            camPos.set(lerp(3.5, 2.5, u), lerp(8.5, 6.0, u), lerp(6.5, 8.0, u));
+          } else {
+            camPos.set(lerp(8.0, 4.2, u), lerp(4.2, 2.6, u), lerp(9.0, 10.8, u));
+          }
           camTarget.set(0, 0.2, 0);
           shiftX = -15;
           shiftY = 95;
