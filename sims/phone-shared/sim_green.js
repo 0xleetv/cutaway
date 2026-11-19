@@ -84,7 +84,10 @@ export function runPhoneGreen(TL = {}) {
 
     const fit = () => {
       if (app && app.style) {
-        app.style.transform = `scale(${Math.min(innerWidth / 1600, innerHeight / 900)})`;
+        const s = Math.min(innerWidth / 1600, innerHeight / 900);
+        const x = Math.max(0, (innerWidth - 1600 * s) / 2);
+        const y = Math.max(0, (innerHeight - 900 * s) / 2);
+        app.style.transform = `translate(${x}px, ${y}px) scale(${s})`;
       }
     };
 
